@@ -19,14 +19,26 @@
             </div>
                     <?php
                     $db = new SQLite3('/home/pi/database/mydata.db', SQLITE3_OPEN_READWRITE);
-                    print_r (dropdownListe());
+                    print_r (dropDownName());
+                    print_r(dropDownLagerort());
 
-                    function dropDownListe() {
+                    function dropDownName() {
                         global $db;
                         $result = $db->query('SELECT name FROM bestand');
                         $dropdown = "<div class=\"row\"> <div class='col-md-3'></div> <div class=\"col-md-6\" id='button'> <select style='background-color: #006dcc' name='vorrat' id='5'>";
                         while($row = $result->fetchArray(SQLITE3_ASSOC)){
                             $dropdown = $dropdown . "<option style='color: #ffffff' value='$row[name]'>$row[name]</option>";
+                        }
+                        $dropdown = $dropdown . "</select> </div> <div class=\"col-md-3\"></div> </div>";
+                        return $dropdown;
+                    }
+
+                    function dropDownLagerort() {
+                        global $db;
+                        $result = $db->query('SELECT DISTINCT lagerort FROM bestand');
+                        $dropdown = "<div class=\"row\"> <div class='col-md-3'></div> <div class=\"col-md-6\" id='button'> <select style='background-color: #006dcc' name='vorrat' id='6'>";
+                        while($row = $result->fetchArray(SQLITE3_ASSOC)){
+                            $dropdown = $dropdown . "<option style='color: #ffffff' value='$row[lagerort]'>$row[lagerort]</option>";
                         }
                         $dropdown = $dropdown . "</select> </div> <div class=\"col-md-3\"></div> </div>";
                         return $dropdown;
@@ -63,7 +75,13 @@
          function sendDBRequest() {
              var menge = "NOT";
              var vorrat = "NOT";
+             var lagerort = "NOT";
              var url = "";
+
+             if(document.getElementById("6").value == "") {
+                 window.alert("Keinen Lagerort ausgewaehlt.");
+                 return;
+             }
 
              if(document.getElementById("5").value == "") {
                  window.alert("Keinen Vorrat ausgewaehlt.");
@@ -71,7 +89,7 @@
              }
              else{
                  vorrat = document.getElementById("5").value;
-                 url = "handle.php?vorrat=" + vorrat + "&type=delete";
+                 url = "handle.php?vorrat=" + vorrat + "&lagerort=" + lagerort + "&type=delete";
              }
 
              if(document.getElementById("3").checked != true) {
@@ -80,7 +98,7 @@
                      window.alert("Keine neue Menge eingetragen.");
                      return;
                  }
-                 url = "handle.php?vorrat=" + vorrat + "&menge=" + menge + "&type=update";
+                 url = "handle.php?vorrat=" + vorrat + "&lagerort=" + lagerort + "&menge=" + menge + "&type=update";
              }
 
              //XMLHTTPREQUEST
@@ -94,6 +112,8 @@
                  if (request.status >= 200 && request.status < 300) {
                      //window.alert(request.responseText);
                      console.log(request.responseText);
+                     window.location.href="index.php";
+                     window.alert("Vorrat aktualisiert.");
                  } else {
                      window.alert(request.responseText);
                      console.warn(request.statusText, request.responseText);
@@ -101,8 +121,7 @@
              });
 
              request.send();
-             window.location.href="index.php";
-             window.alert("Vorrat aktualisiert.");
+
          }
 
         function showAmount() {

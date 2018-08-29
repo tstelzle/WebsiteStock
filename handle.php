@@ -18,7 +18,9 @@
             $namegiven = false;
             while($row = $resultNames->fetchArray()) {
                 if($row['name'] == $vorrat) {
-                    $namegiven = true;
+                    if($row['lagerort'] == $_GET['lagerort']) {
+                        $namegiven = true;
+                    }
                 }
             }
             if($namegiven === true) {
@@ -36,11 +38,25 @@
         }
     }
     elseif ($type == "delete") {
-        if(isset($_GET["vorrat"])) {
+        if(isset($_GET["vorrat"]) and isset($_GET["lagerort"])) {
             $responseText = "Vorrat geloescht.";
             $responseStatus = "202";
             $vorrat = $_GET["vorrat"];
-            $db->exec(" DELETE FROM bestand WHERE name='$vorrat'");
+            $lagerort = $_GET["lagerort"];
+            $result = $db->query("SELECT * FROM bestand WHERE name='$vorrat' AND lagerort='$lagerort'");
+            $resultArray = array();
+            while($row=$result->fetchArray()) {
+                $resultArray.array_push($row['name']);
+            }
+            if(empty($resultArray)) {
+                $responseStatus = "303";
+                $responseText = "Vorrat im Lagerort nicht vorhanden.";
+                header($_SERVER['SERVER_PROTOCOL'].' '.$responseStatus);
+                header('Content-type: text/html; charset=utf-8');
+                echo $responseText;
+                exit();
+            }
+            $db->exec(" DELETE FROM bestand WHERE name='$vorrat' AND lagerort='$lagerort'");
         } else {
             $responseStatus="302";
             $responseText = "Keinen Vorrat uebergeben.";

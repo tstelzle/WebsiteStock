@@ -37,9 +37,10 @@
             <div class="col-md-6" id="button">
                 <label>Lagerort:
                 <?php
+                    $places=["LO1", "LO2", "LU1", "LU2", "LU3", "LU4", "LU5", "LU6", "LU7", "LU8", "LU9", "RO1", "RO2", "RO3", "RU1", "RU2", "RU3", "RU4", "RU5", "RU6", "WEINKELLER"];
                     $dropdown = "<select id='5' style='background-color: #006dcc'> ";
-                    for ($i=1; $i<25; $i++) {
-                        $dropdown = $dropdown . "<option style='color: #ffffff'>$i</option>";
+                    for ($i=0; $i<sizeof($places); $i++) {
+                        $dropdown = $dropdown . "<option style='color: #ffffff'>$places[$i]</option>";
                     }
                     $dropdown = $dropdown . "</select>";
                     print_r($dropdown);
@@ -51,8 +52,19 @@
 
         <div class="row">
             <div class="col-md-3"></div>
+            <div class="col-md-3" id="button">
+                <label><input type="checkbox" id="8" onchange="isStock()" checked="true">Lebensmittel</label>
+            </div>
+            <div class="col-md-3" id="button">
+                <label id="10"><input type="checkbox" id="9" onchange="isMHD()">kein Ablaufdatum</label>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3"></div>
             <div class="col-md-6" id="button">
-                <label>Mindeshaltbarkeitsdatum: </label>
+                <label id="7">Mindeshaltbarkeitsdatum: </label>
                 <input type="date" id="3">
             </div>
             <div class="col-md-3"></div>
@@ -63,13 +75,36 @@
                 <div class="col-md-6" id="button">
                 <button type="button" class="btn btn-primary btn-lg" id="4" onclick="submit()">HINZUFÜGEN</button>
                 </div>
-
             <div class="col-md-3"></div>
         </div>
     </div>
     </body>
 
     <script>
+        function isStock() {
+            if(document.getElementById("8").checked != true) {
+               document.getElementById("7").style.visibility='hidden';
+               document.getElementById("3").style.visibility='hidden';
+               document.getElementById("9").style.visibility='hidden';
+               document.getElementById("10").style.visibility='hidden';
+            } else {
+                document.getElementById("7").style.visibility='visible';
+                document.getElementById("3").style.visibility='visible';
+                document.getElementById("9").style.visibility='visible';
+                document.getElementById("10").style.visibility='visible';
+            }
+        }
+
+        function isMHD() {
+            if(document.getElementById("9").checked != true) {
+                document.getElementById("7").style.visibility='visible';
+                document.getElementById("3").style.visibility='visible';
+            } else {
+                document.getElementById("7").style.visibility='hidden';
+                document.getElementById("3").style.visibility='hidden';
+            }
+        }
+
         function submit() {
             var vorrat = "NOT";
             var menge = "NOT";
@@ -80,7 +115,16 @@
             document.getElementById("1").value == "" ? error=true : vorrat = document.getElementById("1").value;
             document.getElementById("2").value == "" ? error=true : menge = document.getElementById("2").value;
             document.getElementById("5").value == "" ? error=true : lagerort = document.getElementById("5").value;
-            document.getElementById("3").value == "" ? error=true : mhd = document.getElementById("3").value;
+
+            if(document.getElementById("8").checked === true) {
+                if(document.getElementById("9").checked === true) {
+                    mhd = "kein MHD";
+                } else {
+                    document.getElementById("3").value == "" ? error=true : mhd = document.getElementById("3").value;
+                }
+            } else {
+                mhd = "gegenstand";
+            }
 
             if(error === true) {
                 window.alert("Eingaben fehlend.");

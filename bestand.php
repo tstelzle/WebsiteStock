@@ -9,29 +9,33 @@
     </head>
 
     <body>
-    <div class="container-fluid" style="text-align:center;">
-    <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6" id="button">
-             <h1>BESTAND</h1>
-            </div>
-            <div class="col-md-3"></div>
-        </div>
+
+    <center><h1>BESTAND</h1></center>
+
+<!--    <div class="container-fluid" style="text-align:center;">-->
+<!--    <div class="row">-->
+<!--            <div class="col-md-3"></div>-->
+<!--            <div class="col-md-6" id="button">-->
+<!--             <h1>BESTAND</h1>-->
+<!--            </div>-->
+<!--            <div class="col-md-3"></div>-->
+<!--        </div>-->
 
 
     <?php
         $db = new SQLite3('/home/pi/database/mydata.db');
 
-        $result = $db->query('SELECT * FROM bestand');
+        $lebensmittel = $db->query('SELECT * FROM bestand WHERE NOT mhd="gegenstand" ORDER BY name');
+        $gegenstand = $db->query('SELECT * FROM bestand WHERE mhd="gegenstand" ORDER BY name');
 
-        print_r (buildTable());
+        print_r (buildTable($lebensmittel));
+        print_r("<div class='row' style='height: 20px'></div>");
+        print_r(buildTable($gegenstand));
 
-        function buildTable() {
-            global $result;
-
+        function buildTable($result) {
             $table = "<div class='row'><div class='col-md-3'></div><div class='col-md-6'><table align='center' width='90%' class='table-bordered'><tr align='center' style='color:#006dcc'><th>NAME</th><th>MENGE</th><th>LAGERORT</th><th>MHD</th></tr>";
             while($row = $result->fetchArray()) {
-                if(time() >= strtotime($row['mhd'])) {
+                if(time() >= strtotime($row['mhd']) && $row['mhd'] != "gegenstand" && $row['mhd'] !="kein MHD") {
                     $table = $table . "<tr bgcolor='red'><td align='center'>" . $row['name'] . "</td><td align='center'>" . $row['menge'] . "</td><td align='center'>" . $row['lagerort'] . "</td><td align='center'>" . $row['mhd'] . "</td></tr>";
                 }
                 else {
@@ -43,13 +47,11 @@
             return $table;
         }
     ?>
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-6" id="button">
+        <sub class="row" style="height: 20px"></sub>
+            <center>
                 <button class="btn btn-primary btn-lg" id="3" onclick="window.print()">DRUCKEN</button>
-            </div>
-            <div class="col-md-3"></div>
-        </div>
+            </center>
+
     </div>
     </body>
 </html>
