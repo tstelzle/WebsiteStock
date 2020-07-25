@@ -1,5 +1,5 @@
 <?php
-    $db = new SQLite3('/home/pi/database/mydata.db', SQLITE3_OPEN_READWRITE);
+    $db = new SQLite3('/database/mydata.db', SQLITE3_OPEN_READWRITE);
 
     $responseText = "";
     $responseStatus = "";
@@ -43,12 +43,11 @@
             $responseStatus = "202";
             $vorrat = $_GET["vorrat"];
             $lagerort = $_GET["lagerort"];
-            $result = $db->query("SELECT * FROM bestand WHERE name='$vorrat' AND lagerort='$lagerort'");
-            $resultArray = array();
-            while($row=$result->fetchArray()) {
-                $resultArray.array_push($row['name']);
-            }
-            if(empty($resultArray)) {
+            $statement = $db->prepare("SELECT * FROM bestand WHERE name=:description AND lagerort=:place");
+            $statement->bindValue(':description', $vorrat);
+            $statement->bindValue(':place', $lagerort);
+            $result = $statement->execute();
+            if(empty($result->fetchArray(SQLITE3_ASSOC))) {
                 $responseStatus = "303";
                 $responseText = "Vorrat im Lagerort nicht vorhanden.";
                 header($_SERVER['SERVER_PROTOCOL'].' '.$responseStatus);
@@ -56,7 +55,7 @@
                 echo $responseText;
                 exit();
             }
-            $db->exec(" DELETE FROM bestand WHERE name='$vorrat' AND lagerort='$lagerort'");
+            $db->exec("DELETE FROM bestand WHERE name='$vorrat' AND lagerort='$lagerort'");
         } else {
             $responseStatus="302";
             $responseText = "Keinen Vorrat uebergeben.";

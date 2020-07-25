@@ -1,0 +1,42 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content-container {
+    margin: 10px;
+    flex-grow: 1;
+    max-width: 600px;
+    height: auto;
+}
+
+.center {
+    text-align: center;
+}
+
+.headline {
+    color: black;
+}
+
+button {
+    background-color: #007bff;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+    border: 1px solid #007bff;
+}
+
+select {
+    background-color: #007bff;
+    min-width: 150px;
+}
+table {
+    border-collapse: collapse;
+    border: 2px solid black;
+}
+
+td, th {
+    padding: 5px;
+    border: 1px solid black;
+}
