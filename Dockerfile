@@ -21,13 +21,6 @@ VOLUME /var/www/html/
 
 VOLUME /database
 
-WORKDIR /database
-
-RUN sqlite3 mydata.db
-RUN sqlite3 mydata.db "CREATE TABLE bestand (name TEXT NOT NULL, menge TEXT NOT NULL, lagerort TEXT NOT NULL, mhd TEXT NOT NULL);"
-
-RUN chmod 747 -R /database
-
 ADD container_start.sh /
 RUN chmod 747 /container_start.sh
 

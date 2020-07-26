@@ -20,6 +20,6 @@ make container PORT=82
 The database will be mounted into the database directory. 
 For development it can be useful to see the database file.
 
-The 'container_start.sh' starts the services needed in the docker container.
+The 'container_start.sh' starts the services needed in the docker container and creates the database.
 
 The 'nginx_conf' provides the entry script for the docker container and starts the neede services.
