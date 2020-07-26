@@ -4,6 +4,8 @@ This container will host a simple website. This website is used to manage a stoc
 ## Instructions
 This container uses nginx, php and sqlite3.
 To start it use the provided Makefile.
+You can see all possible target use ```make default```.
+The basic targets are these two:
 
 ```Shellscript
 make build-image
@@ -22,4 +24,4 @@ For development it can be useful to see the database file.
 
 The 'container_start.sh' starts the services needed in the docker container and creates the database.
 
-The 'nginx_conf' provides the entry script for the docker container and starts the neede services.
+The 'nginx_conf' provides the configuration for the nginx service.
